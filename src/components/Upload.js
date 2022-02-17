@@ -1,6 +1,26 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
 
 export default function Upload() {
+  const [audio, setAudio] = useState("");
+  const handleCreateMusic = () => {
+    const fd = new FormData();
+    fd.append("audio", audio);
+    axios
+      .post(process.env.REACT_APP_API_URL + "/audio/upload", fd)
+      .then((response) => {
+        console.log("RESPONSE", response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const fileSelectHandler = (e) => {
+    console.log("E", e.target.files[0])
+    setAudio(e.target.files[0]);
+  };
+
   return (
     <div>
       <div className="py-20 h-screen bg-gray-300 px-2">
@@ -18,36 +38,28 @@ export default function Upload() {
                   {" "}
                   <span></span>
                   <div className="relative h-40 rounded-lg border-dashed border-2 border-gray-200 bg-white flex justify-center items-center hover:cursor-pointer">
-                    <div className="absolute">
-                      <div className="flex flex-col items-center ">
-                        {" "}
-                        <i className="fa fa-cloud-upload fa-3x text-gray-200"></i>{" "}
-                        <span className="block text-gray-400 font-normal">
-                          Attach you files here
-                        </span>{" "}
-                        <span className="block text-gray-400 font-normal">or</span>{" "}
-                        <span className="block text-blue-400 font-normal">
-                          Browse files
-                        </span>{" "}
-                      </div>
-                    </div>{" "}
+                    <label>Select your audio</label>
                     <input
                       type="file"
-                      className="h-full w-full opacity-0"
-                      name=""
+                      className="h-full w-full opacity-100"
+                      name={audio}
+                      onChange={fileSelectHandler}
                     />
                   </div>
-                  <div className="flex justify-between items-center text-gray-400">
-                    {" "}
-                    <span>Accepted file type:mp3 only</span>
-                  </div>
                 </div>
-                <div className="mt-3 text-center pb-3">
+                <div className="flex justify-between items-center text-gray-400">
                   {" "}
-                  <button className="w-full h-12 text-lg w-32 bg-blue-600 rounded text-white hover:bg-blue-700">
-                    Create
-                  </button>{" "}
+                  <span>Accepted file type:mp3 only</span>
                 </div>
+              </div>
+              <div className="mt-3 text-center pb-3">
+                {" "}
+                <button
+                  className="w-full h-12 text-lg w-32 bg-blue-600 rounded text-white hover:bg-blue-700"
+                  onClick={handleCreateMusic}
+                >
+                  Create
+                </button>{" "}
               </div>
             </div>
           </div>
