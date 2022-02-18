@@ -1,23 +1,32 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
-export default function Upload() {
+const Upload = () =>{
   const [audio, setAudio] = useState("");
+  const [loading, setLoading] = useState(false)
+  let navigate = useNavigate();
   const handleCreateMusic = () => {
+    setLoading(true)
     const fd = new FormData();
     fd.append("audio", audio);
     axios
       .post(process.env.REACT_APP_API_URL + "/audio/upload", fd)
       .then((response) => {
-        console.log("RESPONSE", response.data);
+        const message = response.data.message;
+        toast.success(message);
+        if(message === "Your music has been successfully uploaded"){
+          navigate("/");
+        }
       })
       .catch((error) => {
-        console.log(error);
+        const message = error.response.data.message;
+        toast.error(message);
       });
   };
 
   const fileSelectHandler = (e) => {
-    console.log("E", e.target.files[0])
     setAudio(e.target.files[0]);
   };
 
@@ -59,7 +68,7 @@ export default function Upload() {
                   onClick={handleCreateMusic}
                 >
                   Create
-                </button>{" "}
+                </button>
               </div>
             </div>
           </div>
@@ -68,3 +77,6 @@ export default function Upload() {
     </div>
   );
 }
+
+
+export default Upload;
