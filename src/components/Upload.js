@@ -3,20 +3,21 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-const Upload = () =>{
+export default function Upload() {
   const [audio, setAudio] = useState("");
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   let navigate = useNavigate();
   const handleCreateMusic = () => {
-    setLoading(true)
+    setLoading(true);
     const fd = new FormData();
     fd.append("audio", audio);
     axios
       .post(process.env.REACT_APP_API_URL + "/audio/upload", fd)
       .then((response) => {
+        setLoading(false);
         const message = response.data.message;
         toast.success(message);
-        if(message === "Your music has been successfully uploaded"){
+        if (message === "Your music has been successfully uploaded") {
           navigate("/");
         }
       })
@@ -47,7 +48,6 @@ const Upload = () =>{
                   {" "}
                   <span></span>
                   <div className="relative h-40 rounded-lg border-dashed border-2 border-gray-200 bg-white flex justify-center items-center hover:cursor-pointer">
-                    <label>Select your audio</label>
                     <input
                       type="file"
                       className="h-full w-full opacity-100"
@@ -67,8 +67,8 @@ const Upload = () =>{
                   className="w-full h-12 text-lg w-32 bg-blue-600 rounded text-white hover:bg-blue-700"
                   onClick={handleCreateMusic}
                 >
-                  Create
-                </button>
+                  Save
+                </button>{" "}
               </div>
             </div>
           </div>
@@ -77,6 +77,3 @@ const Upload = () =>{
     </div>
   );
 }
-
-
-export default Upload;
